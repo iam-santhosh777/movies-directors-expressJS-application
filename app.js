@@ -6,6 +6,7 @@ const sqlite3 = require("sqlite3");
 const app = express();
 const path = require("path");
 const dbPath = path.join(__dirname, "moviesData.db");
+app.use(express.json());
 
 let db = null;
 
@@ -23,7 +24,7 @@ const initializeDBAndServer = async () => {
 };
 initializeDBAndServer();
 
-// API - 1: GET Movie's from Database
+// API - 1: GET the list of all the movies from movie table.
 
 const convertDbObject = (objectItem) => {
   return {
@@ -37,4 +38,19 @@ app.get("/movies/", async (request, response) => {
         movie;`;
   const moviesList = await db.all(getMoviesQuery);
   response.send(moviesList.map((eachMovie) => convertDbObject(eachMovie)));
+});
+
+// API - 2: POST (or) CREATE a movie in movie table
+
+app.post("/movies/", async (request, response) => {
+  const { directorId, movieName, leadActor } = request.body;
+  const addMovieQuery = `
+  INSERT INTO movie(director_id, movie_name, lead_actor)
+  VALUES(
+      ${directorId},
+      '${movieName}',
+      '${leadActor}'
+  );`;
+  await db.run(addMovieQuery);
+  response.send("Movie Addded Successfully");
 });
