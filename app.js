@@ -95,3 +95,21 @@ app.delete("/movies/:movieId", async (request, response) => {
   const deleteRequestQuery = await db.run(deleteQuery);
   response.send("Movie Removed");
 });
+
+// API 6: GET all the directors from directors table.
+
+const getDirectorsDBObject = (objectItem) => {
+  return {
+    directorId: objectItem.director_id,
+    directorName: objectItem.director_name,
+  };
+};
+
+app.get("/directors/", async (request, response) => {
+  const getDirectorQuery = `
+    SELECT * FROM director`;
+  const directorQueryResponse = await db.all(getDirectorQuery);
+  response.send(
+    directorQueryResponse.map((eachItem) => getDirectorsDBObject(eachItem))
+  );
+});
