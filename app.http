@@ -22,3 +22,7 @@ Content-Type: application/json
   "movieName": "Thor",
   "leadActor": "Christopher Hemsworth"
 }
+###
+
+DELETE http://localhost:3000/movies/47/
+
