@@ -113,3 +113,17 @@ app.get("/directors/", async (request, response) => {
     directorQueryResponse.map((eachItem) => getDirectorsDBObject(eachItem))
   );
 });
+
+// API 7: GET the list of movie names directed by a specific director
+
+app.get("/directors/:directorId/movies/", async (request, response) => {
+  const { directorId } = request.params;
+  const getMovieQuery = `
+  SELECT movie_name AS movieName from movie WHERE
+  director_id = ${directorId};`;
+
+  const getMovieResponse = await db.all(getMovieQuery);
+  response.send(getMovieResponse);
+});
+
+module.exports = app;
