@@ -52,5 +52,24 @@ app.post("/movies/", async (request, response) => {
       '${leadActor}'
   );`;
   await db.run(addMovieQuery);
-  response.send("Movie Addded Successfully");
+  response.send("Movie Successfully Added");
+});
+
+// API - 3: GET the movie details from movie table.
+
+const convertMovieDbObject = (objectItem) => {
+  return {
+    movieId: objectItem.movie_id,
+    directorId: objectItem.director_id,
+    movieName: objectItem.movie_name,
+    leadActor: objectItem.lead_actor,
+  };
+};
+
+app.get("/movies/:movieId", async (request, response) => {
+  const { movieId } = request.params;
+  const getMovieDetailsQuery = `SELECT * FROM movie WHERE 
+  movie_id = ${movieId};`;
+  const moviesArray = await db.get(getMovieDetailsQuery);
+  response.send(convertMovieDbObject(moviesArray));
 });
