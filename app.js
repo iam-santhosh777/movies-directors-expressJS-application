@@ -24,7 +24,7 @@ const initializeDBAndServer = async () => {
 };
 initializeDBAndServer();
 
-// API - 1: GET the list of all the movies from movie table.
+// API 1: GET the list of all the movies from movie table.
 
 const convertDbObject = (objectItem) => {
   return {
@@ -40,7 +40,7 @@ app.get("/movies/", async (request, response) => {
   response.send(moviesList.map((eachMovie) => convertDbObject(eachMovie)));
 });
 
-// API - 2: POST (or) CREATE a movie in movie table
+// API 2: POST (or) CREATE a movie in movie table
 
 app.post("/movies/", async (request, response) => {
   const { directorId, movieName, leadActor } = request.body;
@@ -55,7 +55,7 @@ app.post("/movies/", async (request, response) => {
   response.send("Movie Successfully Added");
 });
 
-// API - 3: GET the movie details from movie table.
+// API 3: GET the movie details from movie table.
 
 const convertMovieDbObject = (objectItem) => {
   return {
@@ -72,4 +72,17 @@ app.get("/movies/:movieId", async (request, response) => {
   movie_id = ${movieId};`;
   const moviesArray = await db.get(getMovieDetailsQuery);
   response.send(convertMovieDbObject(moviesArray));
+});
+
+// API 4: Update the movie details in movie table.
+
+app.put("/movies/:movieId/", async (request, response) => {
+  const { movieId } = request.params;
+  const { directorId, movieName, leadActor } = request.body;
+  const updateMovieQuery = `
+  UPDATE movie SET director_id = ${directorId},
+  movie_name = '${movieName}', lead_actor = '${leadActor}'
+  WHERE movie_id = ${movieId};`;
+  await db.run(updateMovieQuery);
+  response.send("Movie Details Updated");
 });
